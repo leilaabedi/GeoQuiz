@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
-    tools:context=".controller.MainActivity2">
+    tools:context=".controller.QuizDetailFragment">
 
     <Button
         android:id="@+id/btn_setting"

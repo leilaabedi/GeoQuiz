@@ -3,9 +3,7 @@ package com.example.geoquiz2.controller;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,8 +11,6 @@ import android.widget.RadioButton;
 
 import com.example.geoquiz2.R;
 import com.example.geoquiz2.model.Setting;
-
-import java.io.Serializable;
 
 public class SettingActivity extends AppCompatActivity {
     public static final String EXTRA_IS_SETTING = "com.example.geoquiz2.isSetting";
@@ -35,7 +31,7 @@ public class SettingActivity extends AppCompatActivity {
         mfirst = getIntent().getBooleanExtra("First", false);
 
         if (mfirst == true) {
-            settingObj = (Setting) getIntent().getSerializableExtra(MainActivity2.EXTRA_IS_MAIN_SETTING);
+            settingObj = (Setting) getIntent().getSerializableExtra(QuizDetailFragment.EXTRA_IS_MAIN_SETTING);
             updateField();
         }
 
@@ -82,7 +78,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Checked();
                 settingObj.setSave(true);
-                Intent intent = new Intent(SettingActivity.this, MainActivity2.class);
+                Intent intent = new Intent(SettingActivity.this, QuizDetailActivity.class);
                 intent.putExtra(EXTRA_IS_SETTING, settingObj);
                 setResult(RESULT_OK, intent);
                 finish();

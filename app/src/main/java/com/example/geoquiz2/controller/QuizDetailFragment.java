@@ -1,17 +1,18 @@
 package com.example.geoquiz2.controller;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,13 +22,7 @@ import com.example.geoquiz2.R;
 import com.example.geoquiz2.model.Question;
 import com.example.geoquiz2.model.Setting;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-public class MainActivity2 extends AppCompatActivity {
+public class QuizDetailFragment extends Fragment {
     private Setting mSetting;
     private boolean mFistSetting = false;
     private boolean mIsCheater = false;
@@ -68,51 +63,66 @@ public class MainActivity2 extends AppCompatActivity {
     };
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        if (savedInstanceState != null) {
-            Log.d(TAG, "savedInstanceState: " + savedInstanceState);
-            mCurrentIndex = savedInstanceState.getInt(BUNDLE_KEY_CURRENT_INDEX, 0);
-            mQuestionBank = (Question[]) savedInstanceState.getSerializable(BUNDLE_KEY_MQUESTION_BANK);
-            score = savedInstanceState.getInt(BUNDLE_KEY_SCORE);
-          //  mSetting=(Setting) savedInstanceState.getSerializable(BUNDLE_KEY_Setting );
-        //    if (mFistSetting==true) ChangeSetting();
 
-        } else
-            Log.d(TAG, "savedInstanceState is NULL!!");
 
-        findViews();
-        setListeners();
-        updateQuestion();
+
+
+
+    public QuizDetailFragment() {
+        // Required empty public constructor
     }
 
 
-    private void findViews() {
-        mTextViewQuestion = findViewById(R.id.txtview_question_text);
-        mButtonTrue = findViewById(R.id.btn_true);
-        mButtonFalse = findViewById(R.id.btn_false);
-        mButtonPrev = findViewById(R.id.btn_back1);
-        mButtonNext = findViewById(R.id.btn_next1);
-        mScore = findViewById(R.id.score);
-        mtxtScore = findViewById(R.id.textScore);
-        mFinallay = findViewById(R.id.finalLayout);
-        mButtonLast = findViewById(R.id.btn_last);
-        mButtonFirst = findViewById(R.id.btn_first);
-        mMainLayout = findViewById(R.id.main1);
-        mButtonRst = findViewById(R.id.reset_btn);
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        //return inflater.inflate(R.layout.fragment_quiz_detail, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_quiz_detail, container, false);
+        findViews(view);
+        setListeners();
+        updateQuestion();
+
+
+        return view;
+
+    }
+
+
+
+
+    private void findViews(View view) {
+        mTextViewQuestion = view.findViewById(R.id.txtview_question_text);
+        mButtonTrue = view.findViewById(R.id.btn_true);
+        mButtonFalse = view.findViewById(R.id.btn_false);
+        mButtonPrev = view.findViewById(R.id.btn_back1);
+        mButtonNext = view.findViewById(R.id.btn_next1);
+        mScore = view.findViewById(R.id.score);
+        mtxtScore = view.findViewById(R.id.textScore);
+        mFinallay = view.findViewById(R.id.finalLayout);
+        mButtonLast = view.findViewById(R.id.btn_last);
+        mButtonFirst = view.findViewById(R.id.btn_first);
+        mMainLayout = view.findViewById(R.id.main1);
+        mButtonRst = view.findViewById(R.id.reset_btn);
         mFinallay.setVisibility(LinearLayout.GONE);
-        mButtonCheat = findViewById(R.id.btn_cheat);
-        mButtonSetting = findViewById(R.id.btn_setting);
-        layou1 = findViewById(R.id.root);
+        mButtonCheat = view.findViewById(R.id.btn_cheat);
+        mButtonSetting = view.findViewById(R.id.btn_setting);
+        layou1 = view.findViewById(R.id.root);
     }
 
     private void setListeners() {
         mButtonSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(MainActivity2.this, SettingActivity.class);
+                Intent intent1 = new Intent(getActivity(), SettingActivity.class);
                 intent1.putExtra("First", mFistSetting);
                 if (mFistSetting == true) {
                     intent1.putExtra(EXTRA_IS_MAIN_SETTING, mSetting);
@@ -194,7 +204,7 @@ public class MainActivity2 extends AppCompatActivity {
         mButtonCheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity2.this, CheatActivity.class);
+                Intent intent = new Intent(getActivity(), CheatDetailActivity.class);
                 intent.putExtra(EXTRA_QUESTION_ANSWER, mQuestionBank[mCurrentIndex].isAnswerTrue());
                 startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
@@ -214,21 +224,21 @@ public class MainActivity2 extends AppCompatActivity {
     private void checkAnswer(boolean userPressed) {
         int i, count = 0;
         if (mQuestionBank[mCurrentIndex].isIsCheated() == true) {
-            Toast.makeText(this, R.string.toast_judgment, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.toast_judgment, Toast.LENGTH_LONG).show();
             mQuestionBank[mCurrentIndex].setIsAnswered(2);
         } else {
 
 
             if (mQuestionBank[mCurrentIndex].isIsAnswered() == 0) {
                 if (mQuestionBank[mCurrentIndex].isAnswerTrue() == userPressed) {
-                    Toast.makeText(MainActivity2.this, R.string.toast_correct, Toast.LENGTH_LONG)
+                    Toast.makeText(getActivity(), R.string.toast_correct, Toast.LENGTH_LONG)
                             .show();
                     mQuestionBank[mCurrentIndex].setIsAnswered(1);
                     score++;
                     mtxtScore.setText("score " + Integer.toString(score));
 
                 } else {
-                    Toast.makeText(MainActivity2.this, R.string.toast_incorrect, Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), R.string.toast_incorrect, Toast.LENGTH_SHORT)
                             .show();
                     mQuestionBank[mCurrentIndex].setIsAnswered(2);
                     mtxtScore.setText("score " + Integer.toString(score));
@@ -256,12 +266,12 @@ public class MainActivity2 extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+   public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK || data == null)
             return;
         if (requestCode == REQUEST_CODE_CHEAT) {
-            mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_IS_CHEAT, false);
+            mIsCheater = data.getBooleanExtra(CheatDetailFragment.EXTRA_IS_CHEAT, false);
             mQuestionBank[mCurrentIndex].setIsCheated(mIsCheater);
         }
         if (requestCode == REQUEST_CODE_ANSWER) {
@@ -342,18 +352,17 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
 
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(BUNDLE_KEY_CURRENT_INDEX, mCurrentIndex);
         outState.putSerializable(BUNDLE_KEY_MQUESTION_BANK, mQuestionBank);
         outState.putInt(BUNDLE_KEY_SCORE, score);
 
-      //  outState.putSerializable(BUNDLE_KEY_Setting, mSetting);
+        //  outState.putSerializable(BUNDLE_KEY_Setting, mSetting);
 
 
     }
 
+
+
 }
-
-
-
